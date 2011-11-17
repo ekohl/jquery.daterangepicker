@@ -26,28 +26,28 @@
 
         <h2>Default Rangepicker</h2>
         <div>
-            <input type="text" value="4/23/99" id="rangeA" />
+            <input type="text" value="2011-01-01" id="rangeA" />
         </div>
 
         <h2>2 inputs Rangepicker</h2>
         <div>
-            <input type="text" value="4/23/99" id="rangeBa" />
-            <input type="text" value="4/23/99" id="rangeBb" />
+            <input type="text" value="2011-01-01" id="rangeBa" />
+            <input type="text" value="2011-10-01" id="rangeBb" />
         </div>
 
         <h2>Rangepicker with arrows</h2>
         <div>
-            <input type="text" value="4/23/99" id="rangeC" />
+            <input type="text" value="2010-02-23" id="rangeC" />
         </div>
 
         <h2>Rangepicker opening to the right</h2>
         <div style="float: right;">
-            <input type="text" value="4/23/99" id="rangeD" />
+            <input type="text" id="rangeD" />
         </div>
 
         <h2>Rangepicker with contraints</h2>
         <div>
-            <input type="text" value="4/23/99" id="rangeE" />
+            <input type="text" id="rangeE" />
         </div>
 
         <script type="text/javascript">
@@ -55,7 +55,12 @@
                 $('#rangeA').daterangepicker();
                 $('#rangeBa, #rangeBb').daterangepicker();
                 $('#rangeC').daterangepicker({arrows: true});
-                $('#rangeD').daterangepicker();
+                $('#rangeD').daterangepicker({
+                    onChange : function(e) {
+                        var val = $('#rangeD').val();
+                        console.log(arguments, this, val);
+                    }
+                }).change(function(e) {console.log(e);});
                 $('#rangeE').daterangepicker({constrainDates: true});
             });
         </script>

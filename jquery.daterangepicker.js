@@ -9,24 +9,30 @@
 
 (function ($) {
     var daterangepicker = function(settings) {
-        var rangeInput = $(this), now = new Date();
+        var rangeInput = $(this), now = new Date(), today = Date.parse('today');
+        var dateValueExpander = function(value) {
+            switch (typeof value) {
+                case 'string':
+                    return Date.parse(value);
+                case 'function':
+                    return value();
+            }
+            return value;
+        };
         
         //defaults
         var options = jQuery.extend({
             presetRanges: [
-                {text: 'Today', dateStart: 'today', dateEnd: 'today' },
-                {text: 'This week', dateStart: 'monday', dateEnd: 'today' },
-                {text: 'Last 7 days', dateStart: 'today-7days', dateEnd: 'today' },
+                {text: 'Today', dateStart: today, dateEnd: today},
+                {text: 'This week', dateStart: 'monday', dateEnd: today},
+                {text: 'Last 7 days', dateStart: 'today-7days', dateEnd: today},
                 {text: 'This month',
-                    dateStart: function() {
-                        return new Date(now.getFullYear(), now.getMonth(), 1);
-                    },
+                    dateStart: new Date(now.getFullYear(), now.getMonth(), 1),
                     dateEnd: 'today'
                 },
             ], 
             //presetRanges: array of objects for each menu preset. 
             //Each obj must have text, dateStart, dateEnd. dateStart, dateEnd accept date.js string or a function which returns a date object
-            // Previous presets:
             presets: {
                 dateRange: 'Date Range'
             },
@@ -39,7 +45,7 @@
             latestDate: false,
             constrainDates: false,
             rangeSplitter: '-', //string to use between dates in single input
-            dateFormat: 'm/d/yy', // date formatting. Available formats: http://docs.jquery.com/UI/Datepicker/%24.datepicker.formatDate
+            dateFormat: $.datepicker.ISO_8601, // Available formats: http://docs.jquery.com/UI/Datepicker/%24.datepicker.formatDate
             closeOnSelect: true, //if a complete selection is made, close the menu
             arrows: false,
             appendTo: 'body',
@@ -89,7 +95,7 @@
         options.datepickerOptions = (settings) ? jQuery.extend(datepickerOptions, settings.datepickerOptions) : datepickerOptions;
         
         //Capture Dates from input(s)
-        var inputDateA, inputDateB = Date.parse('today');
+        var inputDateA, inputDateB = today;
         var inputDateAtemp, inputDateBtemp;
         if(rangeInput.size() == 2){
             inputDateAtemp = Date.parse( rangeInput.eq(0).val() );
@@ -111,10 +117,12 @@
         var rpPresets = (function(){
             var ul = $('<ul class="ui-widget-content"></ul>').appendTo(rp);
             jQuery.each(options.presetRanges,function(){
+                this.dateStart = dateValueExpander(this.dateStart);
+                this.dateEnd = dateValueExpander(this.dateEnd);
                 $('<li class="ui-daterangepicker-'+ this.text.replace(/ /g, '') +' ui-corner-all"><a href="#">'+ this.text +'</a></li>')
-                .data('dateStart', this.dateStart)
-                .data('dateEnd', this.dateEnd)
-                .appendTo(ul);
+                    .data('dateStart', this.dateStart)
+                    .data('dateEnd', this.dateEnd)
+                    .appendTo(ul);
             });
             var x=0;
             jQuery.each(options.presets, function(key, value) {
@@ -243,11 +251,9 @@
                 rp.find('.range-start, .range-end').css('opacity',0).hide(400, function(){
                     rpPickers.hide();
                 });
-                var dateStart = (typeof el.data('dateStart') == 'string') ? Date.parse(el.data('dateStart')) : el.data('dateStart')();
-                var dateEnd = (typeof el.data('dateEnd') == 'string') ? Date.parse(el.data('dateEnd')) : el.data('dateEnd')();
 
-                rangeStart.datepicker('setDate', dateStart);
-                rangeEnd.datepicker('setDate', dateEnd);
+                rangeStart.datepicker('setDate', el.data('dateStart'));
+                rangeEnd.datepicker('setDate', el.data('dateEnd'));
 
                 // TODO Should we really set current day by simulating a click?
                 rangeStart.datepicker().find('.ui-datepicker-current-day').trigger('click');
