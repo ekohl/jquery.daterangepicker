@@ -29,7 +29,7 @@
                 {text: 'This month',
                     dateStart: new Date(now.getFullYear(), now.getMonth(), 1),
                     dateEnd: 'today'
-                },
+                }
             ],
             //presetRanges: array of objects for each menu preset.
             //Each obj must have text, dateStart, dateEnd. dateStart, dateEnd accept date.js string or a function which returns a date object
@@ -62,8 +62,10 @@
             onSelect: function(dateText, inst) {
                     $(this).trigger('constrainOtherPicker');
 
-                    var rangeA = fDate( rp.find('.range-start').datepicker('getDate') );
-                    var rangeB = fDate( rp.find('.range-end').datepicker('getDate') );
+                    var start = rp.find('.range-start').datepicker('getDate');
+                    var end = rp.find('.range-end').datepicker('getDate');
+                    var rangeA = fDate(start);
+                    var rangeB = fDate(end);
 
                     if(rp.find('.ui-daterangepicker-specificDate').is('.ui-state-active')){
                                 rangeB = rangeA;
@@ -83,14 +85,19 @@
                             hideRP();
                         }
                     }
-                    if (options.onChange) options.onChange();
+                    rangeInput.data('daterange', {
+                        start : start,
+                        end : end
+                    });
+                    rangeInput.trigger('change');
                 },
                 defaultDate: +0
         };
 
         //change event fires both when a calendar is updated or a change event on the input is triggered
-        if (options.onChange)
+        if (options.onChange) {
             rangeInput.bind('change', options.onChange);
+        }
 
         //datepicker options from options
         options.datepickerOptions = (settings) ? jQuery.extend(datepickerOptions, settings.datepickerOptions) : datepickerOptions;
