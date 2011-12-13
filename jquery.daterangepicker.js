@@ -79,16 +79,19 @@
                     else{
                         rangeInput.val((rangeA !== rangeB) ? rangeA+' '+ options.rangeSplitter +' '+rangeB : rangeA);
                     }
-                    //if closeOnSelect is true
-                    if(options.closeOnSelect){
-                        if(!rp.find('li.ui-state-active').is('.ui-daterangepicker-dateRange') && !rp.is(':animated') ){
-                            hideRP();
-                        }
-                    }
+
                     rangeInput.data('daterange', {
                         start : start,
                         end : end
                     });
+                    //if closeOnSelect is true
+                    if (options.closeOnSelect)
+                    {
+                        if (!rp.find('li.ui-state-active').is('.ui-daterangepicker-dateRange') && !rp.is(':animated'))
+                        {
+                            hideRP();
+                        }
+                    }
                     rangeInput.trigger('change');
                 },
                 defaultDate: +0
