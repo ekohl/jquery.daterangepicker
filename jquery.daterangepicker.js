@@ -44,7 +44,7 @@
             earliestDate: false,
             latestDate: false,
             constrainDates: false,
-            rangeSplitter: '-', //string to use between dates in single input
+            rangeSplitter: ' - ', //string to use between dates in single input
             dateFormat: $.datepicker.ISO_8601, // Available formats: http://docs.jquery.com/UI/Datepicker/%24.datepicker.formatDate
             closeOnSelect: true, //if a complete selection is made, close the menu
             arrows: false,
@@ -77,7 +77,7 @@
                         rangeInput.eq(1).val(rangeB);
                     }
                     else{
-                        rangeInput.val((rangeA !== rangeB) ? rangeA+' '+ options.rangeSplitter +' '+rangeB : rangeA);
+                        rangeInput.val((rangeA !== rangeB) ? rangeA + options.rangeSplitter + rangeB : rangeA);
                     }
 
                     rangeInput.data('daterange', {
@@ -106,22 +106,22 @@
         options.datepickerOptions = (settings) ? jQuery.extend(datepickerOptions, settings.datepickerOptions) : datepickerOptions;
 
         //Capture Dates from input(s)
-        var inputDateA, inputDateB = today;
+        var inputDateA = today, inputDateB = today;
         var inputDateAtemp, inputDateBtemp;
+
         if(rangeInput.size() === 2){
-            inputDateAtemp = Date.parse( rangeInput.eq(0).val() );
-            inputDateBtemp = Date.parse( rangeInput.eq(1).val() );
+            inputDateAtemp = Date.parse( rangeInput.eq(0).data('date') );
+            inputDateBtemp = Date.parse( rangeInput.eq(1).data('date') );
             if(inputDateAtemp === null){inputDateAtemp = inputDateBtemp;}
             if(inputDateBtemp === null){inputDateBtemp = inputDateAtemp;}
         }
         else {
-            inputDateAtemp = Date.parse( rangeInput.val().split(options.rangeSplitter)[0] );
-            inputDateBtemp = Date.parse( rangeInput.val().split(options.rangeSplitter)[1] );
+            inputDateAtemp = Date.parse( rangeInput.data('date').split(options.rangeSplitter)[0] );
+            inputDateBtemp = Date.parse( rangeInput.data('date').split(options.rangeSplitter)[1] );
             if(inputDateBtemp === null){inputDateBtemp = inputDateAtemp;} //if one date, set both
         }
         if(inputDateAtemp !== null){inputDateA = inputDateAtemp;}
         if(inputDateBtemp !== null){inputDateB = inputDateBtemp;}
-
 
         //build picker and
         var rp = $('<div class="ui-daterangepicker ui-widget ui-helper-clearfix ui-widget-content ui-corner-all"></div>');
