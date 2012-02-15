@@ -52,6 +52,7 @@
             onClose: false,
             onOpen: false,
             onChange: false,
+            onArrowNavigate: false,
             datepickerOptions: null //object containing native UI datepicker API options
         }, settings);
 
@@ -67,9 +68,9 @@
                     var rangeA = fDate(start);
                     var rangeB = fDate(end);
 
-                    if(rp.find('.ui-daterangepicker-specificDate').is('.ui-state-active')){
-                                rangeB = rangeA;
-                            }
+                    if(rp.find('.ui-daterangepicker-specificDate').is('.ui-state-active')) {
+                        rangeB = rangeA;
+                    }
 
                     //send back to input or inputs
                     if(rangeInput.length === 2){
@@ -92,6 +93,7 @@
                             hideRP();
                         }
                     }
+
                     rangeInput.trigger('change');
                 },
                 defaultDate: +0
@@ -110,14 +112,14 @@
         var inputDateAtemp, inputDateBtemp;
 
         if(rangeInput.size() === 2){
-            inputDateAtemp = Date.parse( rangeInput.eq(0).data('date') );
-            inputDateBtemp = Date.parse( rangeInput.eq(1).data('date') );
+            inputDateAtemp = Date.parse( rangeInput.eq(0).val() );
+            inputDateBtemp = Date.parse( rangeInput.eq(1).val() );
             if(inputDateAtemp === null){inputDateAtemp = inputDateBtemp;}
             if(inputDateBtemp === null){inputDateBtemp = inputDateAtemp;}
         }
         else {
-            inputDateAtemp = Date.parse( rangeInput.data('date').split(options.rangeSplitter)[0] );
-            inputDateBtemp = Date.parse( rangeInput.data('date').split(options.rangeSplitter)[1] );
+            inputDateAtemp = Date.parse( rangeInput.val().split(options.rangeSplitter)[0] );
+            inputDateBtemp = Date.parse( rangeInput.val().split(options.rangeSplitter)[1] );
             if(inputDateBtemp === null){inputDateBtemp = inputDateAtemp;} //if one date, set both
         }
         if(inputDateAtemp !== null){inputDateA = inputDateAtemp;}
@@ -356,6 +358,9 @@
                         if(thisDate === null){return false;}
                         $(this).datepicker( "setDate", thisDate.add({milliseconds: diff}) ).find('.ui-datepicker-current-day').trigger('click');
                 });
+
+                if (options.onArrowNavigate) options.onArrowNavigate();
+
                 return false;
             })
             .hover(
