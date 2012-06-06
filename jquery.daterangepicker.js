@@ -63,38 +63,41 @@
             onSelect: function(dateText, inst) {
                     $(this).trigger('constrainOtherPicker');
 
+                    var oldData = rangeInput.data('daterange');
                     var start = rp.find('.range-start').datepicker('getDate');
                     var end = rp.find('.range-end').datepicker('getDate');
                     var rangeA = fDate(start);
                     var rangeB = fDate(end);
 
-                    if(rp.find('.ui-daterangepicker-specificDate').is('.ui-state-active')) {
-                        rangeB = rangeA;
-                    }
+                    if (!oldData || !oldData.start.equals(start) || !oldData.end.equals(end)) {
+                            if(rp.find('.ui-daterangepicker-specificDate').is('.ui-state-active')) {
+                                    rangeB = rangeA;
+                            }
 
-                    //send back to input or inputs
-                    if(rangeInput.length === 2){
-                        rangeInput.eq(0).val(rangeA);
-                        rangeInput.eq(1).val(rangeB);
-                    }
-                    else{
-                        rangeInput.val((rangeA !== rangeB) ? rangeA + options.rangeSplitter + rangeB : rangeA);
-                    }
+                            //send back to input or inputs
+                            if(rangeInput.length === 2){
+                                    rangeInput.eq(0).val(rangeA);
+                                    rangeInput.eq(1).val(rangeB);
+                            }
+                            else{
+                                    rangeInput.val((rangeA !== rangeB) ? rangeA + options.rangeSplitter + rangeB : rangeA);
+                            }
 
-                    rangeInput.data('daterange', {
-                        start : start,
-                        end : end
-                    });
-                    //if closeOnSelect is true
-                    if (options.closeOnSelect)
-                    {
-                        if (!rp.find('li.ui-state-active').is('.ui-daterangepicker-dateRange') && !rp.is(':animated'))
-                        {
-                            hideRP();
-                        }
-                    }
+                            rangeInput.data('daterange', {
+                                    start : start,
+                                    end : end
+                            });
+                            //if closeOnSelect is true
+                            if (options.closeOnSelect)
+                            {
+                                    if (!rp.find('li.ui-state-active').is('.ui-daterangepicker-dateRange') && !rp.is(':animated'))
+                                    {
+                                            hideRP();
+                                    }
+                            }
 
-                    rangeInput.trigger('change');
+                            rangeInput.trigger('change');
+                    }
                 },
                 defaultDate: +0
         };
